@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import SudokuGrid from './components/SudokuGrid';
 import './App.css';
-import SudokuGrid from './Components/SudokuGrid';
 
 function App() {
   const [sudoku, setSudoku] = useState([]);
@@ -14,11 +14,11 @@ function App() {
     const isValid = (grid, row, col, num) => {
       for (let i = 0; i < 9; i++) {
         if (
-          grid[row][i] === num || // Check row
-          grid[i][col] === num || // Check column
-          grid[
-            Math.floor(row / 3) * 3 + Math.floor(i / 3)
-          ][Math.floor(col / 3) * 3 + i % 3] === num // Check subgrid
+          grid[row][i] === num ||
+          grid[i][col] === num ||
+          grid[Math.floor(row / 3) * 3 + Math.floor(i / 3)][
+            Math.floor(col / 3) * 3 + (i % 3)
+          ] === num
         ) {
           return false;
         }
@@ -59,6 +59,7 @@ function App() {
     const sudokuGrid = Array.from({ length: 9 }, () => Array(9).fill(""));
     fillSudoku(sudokuGrid);
     removeNumbers(sudokuGrid);
+
     setSudoku(sudokuGrid);
     setInvalidCells(new Set());
   };
@@ -67,11 +68,11 @@ function App() {
     const isValid = (grid, r, c, val) => {
       for (let i = 0; i < 9; i++) {
         if (
-          (grid[r][i] === val && i !== c) || // Check row
-          (grid[i][c] === val && i !== r) || // Check column
-          grid[
-            Math.floor(r / 3) * 3 + Math.floor(i / 3)
-          ][Math.floor(c / 3) * 3 + i % 3] === val
+          (grid[r][i] === val && i !== c) ||
+          (grid[i][c] === val && i !== r) ||
+          grid[Math.floor(r / 3) * 3 + Math.floor(i / 3)][
+            Math.floor(c / 3) * 3 + (i % 3)
+          ] === val
         ) {
           return false;
         }
@@ -89,7 +90,7 @@ function App() {
   };
 
   const updateCell = (row, col, value) => {
-    const newSudoku = sudoku.map((rowArr, rIdx) => 
+    const newSudoku = sudoku.map((rowArr, rIdx) =>
       rowArr.map((cell, cIdx) => (rIdx === row && cIdx === col ? value : cell))
     );
     setSudoku(newSudoku);
@@ -97,11 +98,13 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className="app-container dark-theme">
       <h1 className="app-title">Sudoku Game</h1>
       <SudokuGrid sudoku={sudoku} updateCell={updateCell} invalidCells={invalidCells} />
       <div className="buttons-container">
-        <button className="button" onClick={generateSudoku}>New Game</button>
+        <button className="button new-game-btn" onClick={generateSudoku}>
+          New Game
+        </button>
       </div>
     </div>
   );
